@@ -1,7 +1,0 @@
-{
-  "tests": [
-    { "test_name": "glucose", "value": 130, "unit": "mg/dL" },
-    { "test_name": "cholesterol", "value": 180, "unit": "mg/dL" }
-  ],
-  "user_id": "user-123"
-}

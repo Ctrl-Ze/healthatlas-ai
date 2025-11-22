@@ -1,36 +1,31 @@
+import logging
+from dotenv import load_dotenv
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List, Optional
-from datetime import datetime
+from fastapi.concurrency import asynccontextmanager
 
-app = FastAPI(title="Chiron - HealthAtlas AI", version="0.1.0")
+from chiron.agents.llm_client import LLMClient
+from chiron.api.analysis_router import router as analysis_router
+from chiron.api.ai_analysis_router import router as ai_analysis_router
 
-@app.get("/", tags=["root"])
-async def root():
-    return {"message": "Hello, Chiron!"}
+logging.basicConfig(level=logging.INFO)
+load_dotenv()
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    app.state.llm = LLMClient()
+    logging.debug("LLMClient initialized")
 
-# a simple model for a blood test value (example)
-class BloodTestItem(BaseModel):
-    test_name: str
-    value: float
-    unit: Optional[str] = None
-    measured_at: Optional[datetime] = None
+    yield
 
-@app.post("/api/v1/analyze/blood-test", tags=["analysis"])
-async def analyze_blood_test(user_id: str, tests: List[BloodTestItem]):
-    """
-    Very small MVP analysis: echo the incoming tests and produce a trivial insight.
-    Later we'll replace this with real rule-based analysis.
-    """
-    warnings = []
-    for t in tests:
-        if t.test_name.lower() == "glucose" and t.value > 120:
-            warnings.append(f"High glucose: {t.value} {t.unit or ''}".strip())
+    # ---- Shutdown (optional cleanup) ----
+    # If you ever add a streaming client or DB connection, close it here
+    logging.debug("Shutting down... LLMClient cleanup")
 
-    insight = {
-        "user_id": user_id,
-        "warnings": warnings,
-        "summary": f"Received {len(tests)} tests",
-    }
-    return insight
+app = FastAPI(
+    title="Chiron - HealthAtlas AI",
+    version="0.1.0",
+    lifespan=lifespan)
+
+app.include_router(analysis_router, prefix="/api/v1/analyze")
+app.include_router(ai_analysis_router, prefix="/api/v1/analyze")
