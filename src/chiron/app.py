@@ -1,14 +1,13 @@
-# src/chiron/app.py
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
 from dotenv import load_dotenv
+from fastapi import FastAPI
 
-from chiron.core.logging import configure_logging, get_logger
-from chiron.core.errors import register_exception_handlers
 from chiron.agents.llm_client import LLMClient
-
 from chiron.api.v1.ai_analysis import router as ai_router
 from chiron.api.v1.deterministic_analysis import router as det_router
+from chiron.core.errors import register_exception_handlers
+from chiron.core.logging import configure_logging, get_logger
 
 load_dotenv()
 configure_logging()
