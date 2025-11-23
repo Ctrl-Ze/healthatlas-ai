@@ -2,7 +2,7 @@ from typing import List
 from datetime import datetime
 from fastapi.testclient import TestClient
 from pydantic import BaseModel
-from chiron.main import BloodTestItem, app
+from chiron.app import BloodTestItem, app
 
 client = TestClient(app)
 
