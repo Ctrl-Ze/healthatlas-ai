@@ -1,6 +1,7 @@
 import logging
 from .config import settings
 
+
 def configure_logging():
     level = getattr(logging, settings.CHIRON_LOG_LEVEL.upper(), logging.INFO)
     root = logging.getLogger()
@@ -12,6 +13,7 @@ def configure_logging():
     fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
     ch.setFormatter(fmt)
     root.addHandler(ch)
+
 
 def get_logger(name: str):
     return logging.getLogger(name)

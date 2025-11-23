@@ -14,7 +14,7 @@ router = APIRouter()
     "/blood-test/ai",
     tags=["analysis"],
     response_model=dict,
-    responses={503: {"model": ErrorResponse}}
+    responses={503: {"model": ErrorResponse}},
 )
 async def analyze_blood_tests_ai(
     request: Request,
@@ -46,18 +46,18 @@ async def analyze_blood_tests_ai(
         "results": rule_output["results"],
         "facts": rule_output["facts"],
         "ai_summary": None,
-        "lifestyle_suggestions": []
+        "lifestyle_suggestions": [],
     }
 
     try:
         ai_out = await llm.summarize_with_lifestyle(
-            warnings=rule_output["warnings"],
-            tests=tests_list,
-            profile=None
+            warnings=rule_output["warnings"], tests=tests_list, profile=None
         )
 
         response_payload["ai_summary"] = ai_out.get("ai_summary")
-        response_payload["lifestyle_suggestions"] = ai_out.get("lifestyle_suggestions", [])
+        response_payload["lifestyle_suggestions"] = ai_out.get(
+            "lifestyle_suggestions", []
+        )
 
         logger.info(f"[traceId={trace_id}] AI summary generated successfully")
 

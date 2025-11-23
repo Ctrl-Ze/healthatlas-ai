@@ -8,8 +8,10 @@ from chiron.models.error_response import ErrorResponse
 
 logger = get_logger(__name__)
 
+
 class AIUnavailableError(Exception):
     pass
+
 
 def register_exception_handlers(app: FastAPI):
     @app.exception_handler(Exception)
@@ -21,9 +23,8 @@ def register_exception_handlers(app: FastAPI):
             message=str(exc),
             status=500,
             timestamp=datetime.utcnow(),
-            traceId=trace_id
+            traceId=trace_id,
         )
         return JSONResponse(
-            status_code=500,
-            content=json.loads(payload.model_dump_json())
-)
+            status_code=500, content=json.loads(payload.model_dump_json())
+        )
