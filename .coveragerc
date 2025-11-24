@@ -1,12 +1,16 @@
 [run]
 source = src/chiron
-relative_files = True
+relative_files = true
+branch = true
+omit =
+    */__init__.py
+    .venv/*
+    tests/*
 
 [report]
 fail_under = 85
-omit =
-    .venv/*
-    */__init__.py
+precision = 2
+show_missing = true
 
 [xml]
 output = coverage.xml
